@@ -12,8 +12,8 @@ class TambahMenuPage extends StatefulWidget {
 
 class _TambahMenuPageState extends State<TambahMenuPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _hargaController = TextEditingController();
+  final _namaController = TextEditingController();
+  final _hargaController = TextEditingController();
 
   @override
   void dispose() {
@@ -24,12 +24,32 @@ class _TambahMenuPageState extends State<TambahMenuPage> {
 
   void _simpanMenu() {
     if (_formKey.currentState!.validate()) {
-      final newMenu = MenuItem(
-        nama: _namaController.text.trim(),
-        harga: int.parse(_hargaController.text.trim()),
+      Get.back(
+        result: MenuItem(
+          nama: _namaController.text.trim(),
+          harga: int.parse(_hargaController.text.trim()),
+        ),
       );
-      Get.back(result: newMenu);
     }
+  }
+
+  // Helper untuk mempersingkat dekorasi input field
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(color: Color(0xFFFF90BB)),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFFFC1DA), width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFFF90BB), width: 2),
+      ),
+    );
   }
 
   @override
@@ -57,77 +77,23 @@ class _TambahMenuPageState extends State<TambahMenuPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 1. TextFormField Nama Menu (Tanpa Ikon)
+              // 1. TextFormField Nama Menu
               TextFormField(
                 controller: _namaController,
-                decoration: InputDecoration(
-                  labelText: 'Nama Menu',
-                  labelStyle: const TextStyle(color: Color(0xFFFF90BB)),
-                  hintText: 'Masukkan nama menu',
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFFFC1DA), width: 1.5),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFFF90BB), width: 2),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nama menu tidak boleh kosong';
-                  }
-                  return null;
-                },
+                decoration: _inputDecoration('Nama Menu'),
+                validator: (val) =>
+                    (val == null || val.trim().isEmpty) ? 'Nama menu tidak boleh kosong' : null,
               ),
               const SizedBox(height: 20),
 
-              // 2. TextFormField Harga Menu (Tanpa Ikon)
+              // 2. TextFormField Harga Menu
               TextFormField(
                 controller: _hargaController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Harga Menu',
-                  labelStyle: const TextStyle(color: Color(0xFFFF90BB)),
-                  hintText: 'Masukkan harga menu (angka)',
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFFFC1DA), width: 1.5),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFFF90BB), width: 2),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Harga tidak boleh kosong';
-                  }
-                  if (int.tryParse(value.trim()) == null) {
-                    return 'Harga harus berupa angka';
-                  }
+                decoration: _inputDecoration('Harga Menu'),
+                validator: (val) {
+                  if (val == null || val.trim().isEmpty) return 'Harga tidak boleh kosong';
+                  if (int.tryParse(val.trim()) == null) return 'Harga harus berupa angka';
                   return null;
                 },
               ),
@@ -138,7 +104,6 @@ class _TambahMenuPageState extends State<TambahMenuPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF90BB),
                   elevation: 2,
-                  shadowColor: const Color(0xFFFF90BB).withOpacity(0.4),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
